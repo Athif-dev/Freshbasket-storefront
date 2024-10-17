@@ -58,7 +58,9 @@ function Navbar() {
               <Badge badgeContent={1} color="success">
                 <ShoppingCartOutlinedIcon className="text-md text-custom-black" />
               </Badge>
-              <h2 className="text-xs">Cart</h2>
+              <Link href="/cart">
+                <h2 className="text-xs">Cart</h2>
+              </Link>
             </div>
             <div className="flex items-center gap-2 cursor-pointer">
               <Avatar

@@ -44,6 +44,9 @@ function ProductGrid() {
     return <LoadingSpinner />;
   }
 
+  console.log(products);
+  
+
   // Filter products based on filters
   const filteredProducts = products.filter((product) => {
     const price = product?.variants?.[0]?.prices?.[0]?.amount || 0;
@@ -73,7 +76,7 @@ function ProductGrid() {
           </select>
         </div>
         <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-7 py-8 px-5 justify-items-stretch">
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <ProductCard
               key={product.id}
               product={product}

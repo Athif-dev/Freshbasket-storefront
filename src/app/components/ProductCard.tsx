@@ -16,6 +16,7 @@ function ProductCard({ product, maxStars, i }) {
 
     return text;
   }
+
   return (
     <div>
       {/* Pc Card */}
@@ -26,8 +27,8 @@ function ProductCard({ product, maxStars, i }) {
               src={
                 product.thumbnail ? product.thumbnail : "/Assets/product.svg"
               }
-              width={250}
-              height={200}
+              width={500}
+              height={500}
               alt="product"
               className="object-contain w-full h-full"
             />

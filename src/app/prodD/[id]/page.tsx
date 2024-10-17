@@ -14,10 +14,25 @@ import { useParams } from "next/navigation";
 import { getProductById } from "@/app/lib/action";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 
+interface SelectedVariant {
+  index: number | null;
+  variantName: string | null;
+}
+interface Product {
+  title: string;
+  thumbnail: string;
+  images: [{ url: string }];
+  variants: [{ title: string; prices: [{ amount: number }] }];
+  description: string;
+}
+
 function page() {
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState<Product>();
   const [selectedImage, setSelectedImage] = useState(product?.thumbnail);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState<SelectedVariant>({
+    index: null,
+    variantName: null,
+  });
 
   const { id } = useParams();
   const productId = id;
@@ -35,12 +50,11 @@ function page() {
     fetchProductByID();
   }, [productId]);
 
-  console.log(product?.variants);
-
   return (
     <div className="container mt-16 lg:mt-40 font-poppins">
       {product ? (
         <div>
+          {/* short navbar */}
           <div className="hidden sm:flex items-center gap-1 text-custom-black ">
             <HomeOutlinedIcon />
             <p className="text-base font-sans font-normal">
@@ -51,6 +65,7 @@ function page() {
               / <span> Vegitables</span>
             </p>
           </div>
+          {/* Product Images */}
           <div className="sm:flex w-full gap-10">
             <div className="flex flex-col-reverse xl:flex-row mt-3 gap-2">
               {/* Images */}
@@ -77,7 +92,7 @@ function page() {
               <div>
                 <div className="flex items-center justify-center lg:w-[350px] lg:h-[300px] xl:w-[430px] xl:h-[430px] border rounded cursor-pointer">
                   <Image
-                    src={selectedImage}
+                    src={selectedImage!}
                     width={500}
                     height={500}
                     className="object-contain w-full h-full"
@@ -86,10 +101,10 @@ function page() {
                 </div>
               </div>
             </div>
-
+            {/* Product Details */}
             <div className="pt-5 xl:w-[35%]">
               <h2 className=" text-xl sm:text-2xl font-medium text-custom-black">
-                {product.title}
+                {product.title}, {selectedVariant?.variantName}
               </h2>
               <p className="text-custom-black text-sm pb-2">
                 by{" "}
@@ -118,9 +133,14 @@ function page() {
                 {product.variants.map((variant, index) => (
                   <div
                     key={index}
-                    onClick={() => setSelectedVariant(index)}
+                    onClick={() =>
+                      setSelectedVariant({
+                        index: index,
+                        variantName: variant.title,
+                      })
+                    }
                     className={`flex items-center justify-between px-2 py-5 mb-3 border rounded cursor-pointer ${
-                      selectedVariant === index
+                      selectedVariant.index === index
                         ? "border-main-green"
                         : "border-gray-400"
                     }`}
@@ -134,7 +154,9 @@ function page() {
                     </p>
                     <DoneOutlinedIcon
                       className={`text-base text-main-green ${
-                        selectedVariant === index ? "opacity-100" : "opacity-0"
+                        selectedVariant.index === index
+                          ? "opacity-100"
+                          : "opacity-0"
                       }`}
                     />
                   </div>
@@ -153,7 +175,7 @@ function page() {
             <div className="border border-gray-400 p-4 rounded-lg">
               <h4 className="text-base pb-3">About the product</h4>
               <p
-                className="text-sm"
+                className="text-sm w-[90%]"
                 dangerouslySetInnerHTML={{
                   __html: product.description,
                 }}
@@ -195,7 +217,7 @@ function page() {
               <BakeryDiningOutlinedIcon className=" text-main-green text-5xl sm:text-7xl" />
               <div>
                 <p className=" text-sm sm:text-base py-2 sm:py-4 text-custom-black">
-                  view more products from Brand
+                  view more products from Fresho
                 </p>
                 <button className="bg-main-green px-3 py-1 sm:px-4 sm:py-1.5 mb-2 text-white text-xs sm:text-sm rounded">
                   View All
