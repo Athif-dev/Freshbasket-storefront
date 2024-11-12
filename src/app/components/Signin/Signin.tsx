@@ -1,16 +1,26 @@
+"use client";
 import { login, SignUp } from "@/app/lib/action";
 import React, { useState } from "react";
-import Loading from "@/app/components/Loading";
+import { setUser } from "@/app/store/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store";
+import { useRouter } from "next/navigation";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function Signin() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const [signUp, setSignUp] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const name = useSelector((state: RootState) => state.user.isAuthenticated);
+
+  const router = useRouter();
 
   const toggleClick = () => {
     if (signUp === false) {
@@ -32,7 +42,15 @@ function Signin() {
 
     try {
       const response = await SignUp(signUpData);
-      console.log(response);
+      dispatch(
+        setUser({
+          id: response.user.id,
+          firstName: response.user.first_name,
+          lastName: response.user.last_name,
+          email: response.user.email,
+        })
+      );
+      router.push("/profile");
     } catch (error) {
       console.error("Error during sign-up");
     }
@@ -40,37 +58,46 @@ function Signin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(""); // Reset error state
 
     const loginData = {
       email: email,
       password: password,
     };
 
-    setLoading(true);
     try {
       const response = await login(loginData);
-      console.log(response);
+
+      // Dispatch user data to Redux store
+      dispatch(
+        setUser({
+          id: response.user.id,
+          firstName: response.user.first_name,
+          lastName: response.user.last_name,
+          email: response.user.email,
+        })
+      );
     } catch (error) {
-      console.error("Error during sign-up");
+      console.error(error);
+      setError("Incorrect email or password");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div>
-      <div className="mt-[3.6rem] sm:mt-[8.8rem] container lg:flex justify-center h-[70vh] lg:h-[50vh] xl:h-[80vh] font-poppins">
+      <div className="font-poppins shadow-lg">
         <div className="flex items-center justify-center">
-          {loading && <Loading />}
           {signUp ? (
             <form
               onSubmit={handleLogin}
-              className={`${
-                loading ? `hidden` : `block`
-              } bg-custom-black p-8 rounded shadow-md w-[400px] h-[380px] font-poppins`}
+              className={
+                "bg-custom-black p-8 rounded shadow-md w-[400px] h-max font-poppins"
+              }
             >
               <h1 className="text-2xl mb-6 text-white">Login</h1>
-              {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+              {error && <p className="text-red-500 text-sm mb-1">{error}</p>}
               <div className="mb-4">
                 <label htmlFor="email" className="block text-white">
                   Email
@@ -102,7 +129,11 @@ function Signin() {
                 type="submit"
                 className="w-full bg-main-green text-white py-2 rounded"
               >
-                Login
+                {loading ? (
+                  <CircularProgress sx={{ color: "white" }} size={20} />
+                ) : (
+                  "Login"
+                )}
               </button>
               <p className="text-center font-poppins mt-3 text-sm text-white">
                 Dont have an account?{" "}
@@ -113,11 +144,22 @@ function Signin() {
                   Signup
                 </span>
               </p>
+
+              <p className="text-center font-poppins mt-3 text-xs font-light text-gray-400">
+                By continuing, I accept TCP -{" "}
+                <span className="underline underline-offset-2 cursor-pointer">
+                  Freshbasket’s Terms and Conditions{" "}
+                </span>
+                {"   "}&{"   "}
+                <span className="underline underline-offset-2 cursor-pointer">
+                  Privacy Policy
+                </span>
+              </p>
             </form>
           ) : (
             <form
               onSubmit={handleSignUp}
-              className="bg-custom-black p-8 rounded shadow-md w-[400px] h-[450px] font-poppins "
+              className="bg-custom-black p-8 rounded shadow-md w-[400px] h-max font-poppins "
             >
               <h1 className="text-2xl mb-6 text-white">Signup</h1>
               {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -191,6 +233,16 @@ function Signin() {
                   onClick={toggleClick}
                 >
                   Login
+                </span>
+              </p>
+              <p className="text-center font-poppins mt-3 text-xs font-light text-gray-400">
+                By continuing, I accept TCP -{" "}
+                <span className="underline underline-offset-2 cursor-pointer">
+                  Freshbasket’s Terms and Conditions{" "}
+                </span>
+                {"   "}&{"   "}
+                <span className="underline underline-offset-2 cursor-pointer">
+                  Privacy Policy
                 </span>
               </p>
             </form>

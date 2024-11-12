@@ -17,11 +17,15 @@ function PaymentFailed({ errorMessage }: { errorMessage: string | null }) {
         <h1 className="text-2xl mt-5 font-medium font-poppins text-custom-black">
           Oops! Payment Failed
         </h1>
+        <p className="text-gray-500 text-xs mt-2 font-medium">
+          Please try again later
+        </p>
         {errorMessage && (
-          <p className="text-gray-500 text-xs mt-2 font-medium">
+          <p className="text-gray-500 text-xs mt-2 font-medium max-w-[80%]">
             Payment Error : {errorMessage}
           </p>
         )}
+
         <button
           className="border border-custom-black w-full py-1 mt-6 text-base rounded-2xl"
           onClick={() => router.push("/home")}

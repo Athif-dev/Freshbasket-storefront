@@ -15,7 +15,8 @@ const config: Config = {
           sm: "1rem", // Padding for small screens
           md: "2rem", // Padding for medium screens
           lg: "3rem", // Padding for large screens
-          xl: "10rem", // Padding for extra-large screens
+          xl: "4.5rem", // other browsers
+          "2xl": "12rem", //  Chrome
         },
       },
       fontFamily: {
@@ -27,6 +28,16 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  safelist: ["custom-scrollbar"], // Safelist added here directly
+  plugins: [
+    function ({ addBase }) {
+      addBase({
+        "*": { boxSizing: "border-box" },
+        "*::before": { boxSizing: "border-box" },
+        "*::after": { boxSizing: "border-box" },
+      });
+    },
+  ],
 };
+
 export default config;
