@@ -16,7 +16,7 @@ const SideBySideLayout: React.FC<SideBySideLayoutProps> = ({ children }) => {
             <ul>
               <li>
                 <a
-                  className='block p-2 rounded-sm 
+                  className='block p-2 rounded-sm cursor-pointer
                     hover:bg-green-100 hover:text-main-green"
                   '
                 >
@@ -25,7 +25,7 @@ const SideBySideLayout: React.FC<SideBySideLayoutProps> = ({ children }) => {
               </li>
               <li>
                 <a
-                  className='block p-2 rounded-sm 
+                  className='block p-2 rounded-sm cursor-pointer
                     hover:bg-green-100 hover:text-main-green"
                   '
                 >
@@ -34,7 +34,7 @@ const SideBySideLayout: React.FC<SideBySideLayoutProps> = ({ children }) => {
               </li>
               <li>
                 <a
-                  className='block p-2 rounded-sm 
+                  className='block p-2 rounded-sm  cursor-pointer
                     hover:bg-green-100 hover:text-main-green"
                   '
                 >

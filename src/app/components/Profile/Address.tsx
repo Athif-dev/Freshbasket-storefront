@@ -7,7 +7,6 @@ import { CircularProgress } from "@mui/material";
 const Address = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [address, setAddress] = useState("");
   const [building, setBuilding] = useState("");
   const [postal, setPostal] = useState("");
@@ -22,9 +21,8 @@ const Address = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    // Validate first name and last name
+    // Validate first name
     if (!firstName) newErrors.firstName = "First name is required.";
-    if (!lastName) newErrors.lastName = "Last name is required.";
 
     // Validate address
     if (!address) newErrors.address = "Address is required.";
@@ -51,7 +49,7 @@ const Address = () => {
     const addressData = {
       address: {
         first_name: firstName,
-        last_name: lastName,
+        last_name: '',
         address_1: address,
         address_2: building,
         postal_code: postal.toString(),
@@ -67,6 +65,7 @@ const Address = () => {
       console.log(error);
     } finally {
       setLoading(false);
+      setIsOpen(false)
     }
   };
 
@@ -93,50 +92,45 @@ const Address = () => {
                   className="flex flex-col gap-3 items-center mt-4"
                   onSubmit={addAddressHandler}
                 >
-                  <div className="flex gap-5">
-                    <div className="flex flex-col w-full">
-                      <input
-                        className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
-                        placeholder="First Name"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                      />
-                      {errors.firstName && (
-                        <span className="text-red-600 text-xs mt-1 text-left">{errors.firstName}</span>
-                      )}
-                    </div>
-                    <div className="flex flex-col w-full">
-                      <input
-                        className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                      />
-                      {errors.lastName && (
-                        <span className="text-red-600 text-xs mt-1 text-left">{errors.lastName}</span>
-                      )}
-                    </div>
+                  <div className="flex flex-col w-full">
+                    <input
+                      className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
+                      placeholder="Name"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                    {errors.firstName && (
+                      <span className="text-red-600 text-xs mt-1 text-left">
+                        {errors.firstName}
+                      </span>
+                    )}
                   </div>
-
-                  <input
-                    className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
-                    placeholder="Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  />
-                  {errors.address && (
-                    <span className="text-red-600 text-xs mt-1 text-left">{errors.address}</span>
-                  )}
-
-                  <input
-                    className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
-                    placeholder="Building, Apartment, etc"
-                    value={building}
-                    onChange={(e) => setBuilding(e.target.value)}
-                  />
-                  {errors.building && (
-                    <span className="text-red-600 text-xs mt-1 text-left">{errors.building}</span>
-                  )}
+                  <div className="w-full">
+                    <input
+                      className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
+                      placeholder="Building, Apartment, etc"
+                      value={building}
+                      onChange={(e) => setBuilding(e.target.value)}
+                    />
+                    {errors.building && (
+                      <span className="text-red-600 text-xs mt-1 text-left">
+                        {errors.building}
+                      </span>
+                    )}
+                  </div>
+                  <div className="w-full">
+                    <input
+                      className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
+                      placeholder="Address"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                    {errors.address && (
+                      <span className="text-red-600 text-xs mt-1 text-left">
+                        {errors.address}
+                      </span>
+                    )}
+                  </div>
 
                   <div className="flex gap-5">
                     <div className="flex flex-col w-full">
@@ -148,7 +142,9 @@ const Address = () => {
                         onChange={(e) => setPostal(e.target.value)}
                       />
                       {errors.postal && (
-                        <span className="text-red-600 text-xs mt-1 text-left">{errors.postal}</span>
+                        <span className="text-red-600 text-xs mt-1 text-left">
+                          {errors.postal}
+                        </span>
                       )}
                     </div>
                     <div className="flex flex-col w-full">
@@ -159,21 +155,26 @@ const Address = () => {
                         onChange={(e) => setCity(e.target.value)}
                       />
                       {errors.city && (
-                        <span className="text-red-600 text-xs mt-1 text-left">{errors.city}</span>
+                        <span className="text-red-600 text-xs mt-1 text-left">
+                          {errors.city}
+                        </span>
                       )}
                     </div>
                   </div>
-
-                  <input
-                    className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
-                    placeholder="Phone"
-                    type="number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  {errors.phone && (
-                    <span className="text-red-600 text-xs mt-1 text-left">{errors.phone}</span>
-                  )}
+                  <div className="w-full">
+                    <input
+                      className="border border-gray-200 text-base py-1.5 px-2 w-full bg-gray-50 rounded-sm shadow-sm"
+                      placeholder="Phone"
+                      type="number"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                    {errors.phone && (
+                      <span className="text-red-600 text-xs mt-1 text-left">
+                        {errors.phone}
+                      </span>
+                    )}
+                  </div>
                 </form>
                 <div className="flex gap-3 items-center justify-end mt-5">
                   <button

@@ -119,5 +119,5 @@ a {
 /* Scrollbar styling for Firefox */
 .custom-scrollbar {
   scrollbar-width: thin; /* Thinner scrollbar */
-  scrollbar-color: #4caf50 #f0f0f0; /* Thumb color and track color */
+  scrollbar-color: #494949 #f0f0f0; /* Thumb color and track color */
 }

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import Image from "next/image";
 
@@ -89,7 +89,11 @@ function ProductCard({ product, maxStars, i }) {
           <h2 className="text-[1rem] font-medium"> {product.title}</h2>
           <p
             className="text-xs mt-1"
-            dangerouslySetInnerHTML={{ __html: product.description }}
+            dangerouslySetInnerHTML={{
+              __html:
+                product.description?.substring(0, 60) +
+                (product.description?.length > 150 ? "..." : ""),
+            }}
           />
           <div className="flex items-center my-1.5">
             {Array.from({ length: maxStars }, (_, index) => (

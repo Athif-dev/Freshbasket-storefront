@@ -29,6 +29,7 @@ import Signin from "../Signin/Signin";
 import { login, logout } from "@/app/lib/action";
 import Cookies from "js-cookie";
 import { loadUser } from "@/app/store/userSlice";
+import SearchBar from "./Searchbar";
 
 function Navbar() {
   const isUserAuthenticated = useSelector(
@@ -53,9 +54,6 @@ function Navbar() {
       try {
         const user = JSON.parse(userCookie);
         // Dispatch loadUser action to set the user in the Redux store
-        console.log(user);
-
-        console.log(user);
         dispatch(
           loadUser({
             id: user.id,
@@ -69,8 +67,6 @@ function Navbar() {
       }
     }
   }, [isUserAuthenticated]);
-
-  console.log(isUserAuthenticated);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -100,14 +96,8 @@ function Navbar() {
               </div>
             </div>
           </Link>
-          <div className="min-w-[400px] flex">
-            <input
-              placeholder="search for items.."
-              className="bg-[#F3F3F3] pl-2 h-10 w-full text-sm"
-            />
-            <button className="bg-main-green text-white p-y-1.5 px-3 ">
-              <SearchIcon />
-            </button>
+          <div>
+            <SearchBar />
           </div>
           <div className="flex justify-between gap-10">
             <div className="flex items-center gap-2 cursor-pointer">
@@ -264,6 +254,7 @@ function Navbar() {
           </div>
         </div>
       ) : null}
+
       {/* moblie navbar */}
       <div className="fixed top-0 left-0 w-full bg-white/80 backdrop-blur-xl shadow-lg z-50 font-poppins">
         <div className="container sm:hidden flex items-center justify-between h-14">
@@ -299,12 +290,8 @@ function Navbar() {
           leaveFrom="transform opacity-100 translate-y-0"
           leaveTo="transform opacity-0 -translate-y-5"
         >
-          <div className="container sm:hidden py-2">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full p-2 border border-gray-300"
-            />
+          <div className="sm:hidden">
+            <SearchBar />
           </div>
         </Transition>
       </div>

@@ -2,30 +2,43 @@ import React from "react";
 import { cookies } from "next/headers";
 import Signin from "../components/Signin/Signin";
 import Avatar from "@mui/material/Avatar";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import { getUser } from "../lib/action";
 import Address from "../components/Profile/Address";
-import DeleteButton from "../components/Profile/DeleteButton";
-import EditButton from "../components/Profile/EditButton";
+import DeleteButton from "../components/Profile/DeleteAddressButton";
+import EditButton from "../components/Profile/EditAddressButton";
+import DeleteInfoButton from "../components/Profile/EditInfoButton";
 
-interface Customer {
+interface User {
+  customer: {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+    email: string;
+    first_name: string;
+    last_name: string;
+    billing_address_id: string | null;
+    phone: string | null;
+    has_account: boolean;
+    metadata: any;
+    billing_address: any | null;
+    shipping_addresses: Array<any>;
+  };
+}
+interface Address {
   id: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-  email: string;
   first_name: string;
   last_name: string;
-  billing_address_id: string | null;
+  address_1: string;
+  address_2: string | null;
+  city: string;
+  province: string;
+  postal_code: string;
   phone: string | null;
-  has_account: boolean;
-  metadata: any;
-  billing_address: any | null;
-  shipping_addresses: Array<any>;
 }
 
 async function page() {
-  let user: Customer | null = null;
+  let user: User | null = null;
   let token = null;
 
   const userCookie = cookies().get("user");
@@ -40,7 +53,6 @@ async function page() {
   const fetchUser = async () => {
     try {
       user = await getUser(token);
-      // console.log(address.id);
     } catch (err) {
       console.error("Fetch error:", err);
     }
@@ -74,12 +86,6 @@ async function page() {
             </p>
           </div>
         </div>
-        <div>
-          <button className="border rounded border-gray-300 p-1 text-sm font-medium text-gray-400 flex items-center gap-1">
-            <DriveFileRenameOutlineIcon sx={{ width: 15, height: 15 }} />
-            Edit
-          </button>
-        </div>
       </div>
 
       {/* Personal Informaton */}
@@ -89,10 +95,7 @@ async function page() {
             Personal Informaton
           </h2>
           <div>
-            <button className="border rounded border-gray-300 p-1 text-sm font-medium text-gray-400 flex items-center gap-1">
-              <DriveFileRenameOutlineIcon sx={{ width: 15, height: 15 }} />
-              Edit
-            </button>
+            <DeleteInfoButton userInfo={user} />
           </div>
         </div>
 
@@ -101,14 +104,14 @@ async function page() {
             <div>
               <p className="text-sm font-light">First Name</p>
               <h1 className="text-sm font-medium mt-2">
-                {user ? user.customer.first_name : "N/A"}
+                {user ? (user as User).customer.first_name : "N/A"}
               </h1>
             </div>
             <div>
               <p className="text-sm font-light">Last Name</p>
               <h1 className="text-sm font-medium mt-2">
                 {" "}
-                {user ? user.customer.last_name : "N/A"}
+                {user ? (user as User).customer.last_name : "N/A"}
               </h1>
             </div>
           </div>
@@ -117,12 +120,15 @@ async function page() {
               <p className="text-sm font-light">Email Address</p>
               <h1 className="text-sm font-medium mt-2">
                 {" "}
-                {user ? user.customer.email : "N/A"}
+                {user ? (user as User).customer.email : "N/A"}
               </h1>
             </div>
             <div>
               <p className="text-sm font-light">Phone</p>
-              <h1 className="text-sm font-medium mt-2">(214) 475 821</h1>
+              <h1 className="text-sm font-medium mt-2">
+                {" "}
+                {user ? (user as User).customer.phone : "N/A"}
+              </h1>
             </div>
           </div>
         </div>
@@ -133,8 +139,7 @@ async function page() {
         <h2 className="text-base font-medium text-custom-black">Addresses</h2>
         <div className="grid grid-cols-2 gap-5">
           <Address />
-
-          {user?.customer.shipping_addresses.map((address) => {
+          {user?.customer?.shipping_addresses?.map((address: Address) => {
             return (
               <div
                 key={address.id}
@@ -148,7 +153,7 @@ async function page() {
 
                   <p className="text-sm font-light">{address.address_2}</p>
                   <p className="text-sm font-light">
-                    {address.city}, {address.province} {address.postal_code}
+                    {address.city}, {address.postal_code}
                   </p>
 
                   <p className="text-sm font-light">

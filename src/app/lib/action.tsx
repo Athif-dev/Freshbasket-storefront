@@ -10,13 +10,13 @@ const medusa = new Medusa({
 
 const baseUrl = "http://localhost:9000";
 
+//////////////////// Auth  /////////////////////////
 let jwtToken: string | null = null;
 
 export function setJwtToken(token: string) {
   jwtToken = token;
 }
 
-//////////////////// Auth  /////////////////////////
 export async function SignUp(signUpData: {
   first_name: string;
   last_name: string;
@@ -110,6 +110,32 @@ export async function getUser(token: string | null) {
   }
 }
 
+// Edit user info
+export async function editUser(userData) {
+  const jwtToken = Cookies.get("token"); // Retrieve token from cookies directly
+
+  if (!jwtToken) {
+    throw new Error("Unauthorized: JWT token is missing");
+  }
+
+  try {
+    const response = await fetch(`${baseUrl}/store/customers/me`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwtToken}`,
+      },
+
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+}
+
 //////////////////// Profile  /////////////////////////
 // Add address
 export async function addAddress(addressData) {
@@ -140,7 +166,7 @@ export async function addAddress(addressData) {
 // Add address
 export async function editAddress(addressData, addressId) {
   console.log(JSON.stringify(addressData));
-  
+
   const jwtToken = Cookies.get("token"); // Retrieve token from cookies directly
 
   if (!jwtToken) {
@@ -148,15 +174,18 @@ export async function editAddress(addressData, addressId) {
   }
 
   try {
-    const response = await fetch(`${baseUrl}/store/customers/me/addresses/${addressId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${jwtToken}`,
-      },
+    const response = await fetch(
+      `${baseUrl}/store/customers/me/addresses/${addressId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwtToken}`,
+        },
 
-      body: JSON.stringify(addressData),
-    });
+        body: JSON.stringify(addressData),
+      }
+    );
 
     const data = await response.json();
     return data;
@@ -232,6 +261,33 @@ export async function getCategories() {
       console.error("Error fetching categories", error.response.data.message);
     } else {
       console.error("Error fetching categories:", error.message);
+    }
+    throw error;
+  }
+}
+
+//Search Products
+export async function searchProducts(debouncedTerm: string) {
+  
+  try {
+    const response = await fetch(
+      `http://localhost:9000/store/products?q=${debouncedTerm}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    return data.products;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      console.error("Error searching products", error.response.data.message);
+    } else {
+      console.error("Error searching products:", error.message);
     }
     throw error;
   }

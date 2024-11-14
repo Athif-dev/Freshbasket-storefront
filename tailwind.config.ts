@@ -28,7 +28,6 @@ const config: Config = {
       },
     },
   },
-  safelist: ["custom-scrollbar"], // Safelist added here directly
   plugins: [
     function ({ addBase }) {
       addBase({

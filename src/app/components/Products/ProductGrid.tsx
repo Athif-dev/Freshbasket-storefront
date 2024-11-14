@@ -35,7 +35,7 @@ const ProductGrid = async () => {
           <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-3 gap-7 py-8 px-5 justify-items-stretch">
             {products.map((product) => (
               <ProductCard
-                key={product.id}
+                i={product.id}
                 product={product}
                 maxStars={maxStars}
               />
@@ -75,7 +75,7 @@ const ProductGrid = async () => {
         <div className="py-[0.8rem]">
           {products.map((product) => (
             <ProductCard
-              key={product.id}
+              i={product.id}
               product={product}
               maxStars={maxStars}
             />
